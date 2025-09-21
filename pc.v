@@ -17,6 +17,8 @@
    $next_pc[31:0] = $reset ? 0 :
                     $pc + 32'd4;
    
+   `READONLY_MEM($pc, $$instr[31:0]);
+   
    // Assert these to end simulation (before the cycle limit).
    *passed = *cyc_cnt > 40;
    *failed = 1'b0;
