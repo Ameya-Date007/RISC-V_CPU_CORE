@@ -64,6 +64,10 @@
    
    $is_u_instr = $instr[6:2] ==? 5'b0x101;
    
+   $rs2[4:0] = $instr[24:20];
+   $rs2_valid = $is_r_instr || $is_s_instr || $is_b_instr;
+   $imm_valid = $is_i_instr || $is_s_instr || $is_b_instr || $is_u_instr || $is_j_instr ;
+   
    // Assert these to end simulation (before Makerchip cycle limit).
    *passed = 1'b0;
    *failed = *cyc_cnt > M4_MAX_CYC;
