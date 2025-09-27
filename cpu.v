@@ -47,6 +47,10 @@
    $next_pc[31:0] = $reset ? 0 :
                     $pc + 32'd4;
    
+   //Macro instantiation for instruction memory.
+   //Input : 8-bit pointer (PC).
+   //Output: 32-bit instruction (dereferencing the PC).
+   
    `READONLY_MEM($pc, $$instr[31:0]);
    $is_i_instr = $instr[6:2] ==? 5'b0000x ||
                  $instr[6:2] ==? 5'b001x0 ||
@@ -98,6 +102,7 @@
    *passed = 1'b0;
    *failed = *cyc_cnt > M4_MAX_CYC;
    
+   m4+rf(32, 32, $reset, $wr_en, $wr_index[4:0], $wr_data[31:0], $rs1_valid, $rs1, $src1_value, $rs2_valid, $rs2, $src2_value)
    //m4+rf(32, 32, $reset, $wr_en, $wr_index[4:0], $wr_data[31:0], $rd_en1, $rd_index1[4:0], $rd_data1, $rd_en2, $rd_index2[4:0], $rd_data2)
    //m4+dmem(32, 32, $reset, $addr[4:0], $wr_en, $wr_data[31:0], $rd_en, $rd_data)
    m4+cpu_viz()
