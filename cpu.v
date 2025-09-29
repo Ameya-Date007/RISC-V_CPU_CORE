@@ -132,6 +132,8 @@
                    $is_slti ? (($src1_value[31] == $imm[31]) ? $sltiu_rslt : {31'b0, $src1_value[31]}):
                    $is_sra ? $sra_rslt[31:0]:
                    $is_srai ? $srai_rslt[31:0]:
+                   $is_load ? ($src1_value + $imm):
+                   $is_s_instr ? ($src1_value + $imm):
                    32'b0;
    
    // Branch Instructions Code
@@ -146,13 +148,13 @@
    // Target PC
    $br_tgt_pc[31:0] = $pc + $imm;
    $jalr_tgt_pc[31:0] = $src1_value + $imm;
-   
+   $wr_dmem_rf[31:0] = $is_load ? $ld_data : $result;
    // Assert these to end simulation (before Makerchip cycle limit).
    m4+tb()
    *failed = *cyc_cnt > M4_MAX_CYC;
    
-   m4+rf(32, 32, $reset, $rd_valid, $rd, $result, $rs1_valid, $rs1, $src1_value, $rs2_valid, $rs2, $src2_value)
-
+   m4+rf(32, 32, $reset, $rd_valid, $rd, $wr_dmem_rf, $rs1_valid, $rs1, $src1_value, $rs2_valid, $rs2, $src2_value)
+   m4+dmem(32, 32, $reset, $result[6:2], $is_s_instr, $src2_value, $is_load, $ld_data)
    
    //m4+rf(32, 32, $reset, $wr_en, $wr_index[4:0], $wr_data[31:0], $rd_en1, $rd_index1[4:0], $rd_data1, $rd_en2, $rd_index2[4:0], $rd_data2)
    //m4+dmem(32, 32, $reset, $addr[4:0], $wr_en, $wr_data[31:0], $rd_en, $rd_data)
